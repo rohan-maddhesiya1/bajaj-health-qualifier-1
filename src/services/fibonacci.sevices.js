@@ -1,7 +1,9 @@
+import { ApiError } from "../utils/ApiError.js";
+
 export const generateFibonacci = (n) => {
   // Validation
   if (!Number.isInteger(n) || n < 0) {
-    throw new Error("Fibonacci input must be a non-negative integer");
+    throw new ApiError(422, "Fibonacci input must be a non-negative integer");
   }
 
   // Edge cases

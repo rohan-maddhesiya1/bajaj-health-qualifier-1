@@ -3,7 +3,7 @@ import { generateFibonacci } from "../services/fibonacci.sevices.js";
 import { filterPrimes } from "../services/prime.js";
 import { calculateHCF, calculateLCM } from "../services/math.js";
 import { getAIResponse } from "../services/ai.js";
-
+import { ApiError } from "../utils/ApiError.js";
 
 export const handleBfhl = async (req, res) => {
     try {
@@ -11,20 +11,13 @@ export const handleBfhl = async (req, res) => {
 
         // Basic validation: body must exist
         if (!body || typeof body !== "object") {
-            return res.status(400).json({
-                is_success: false,
-                error: "Invalid request body",
-            });
+            throw new ApiError(400, "Invalid request body");
         }
 
         // Exactly one key must be present
         const keys = Object.keys(body);
-
         if (keys.length !== 1) {
-            return res.status(400).json({
-                is_success: false,
-                error: "Request must contain exactly one key",
-            });
+            throw new ApiError(400, "Request must contain exactly one key");
         }
 
         const key = keys[0];
@@ -68,10 +61,11 @@ export const handleBfhl = async (req, res) => {
 
 
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({
+        const status = err instanceof ApiError ? err.statusCode : 500;
+
+        return res.status(status).json({
             is_success: false,
-            error: "Internal Server Error",
+            error: err.message || "Internal Server Error",
         });
     }
 };

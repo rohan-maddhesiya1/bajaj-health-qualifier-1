@@ -1,11 +1,12 @@
 import axios from "axios";
 import { ENV } from "../config/env.js";
+import { ApiError } from "../utils/ApiError.js";
 
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
 export const getAIResponse = async (question) => {
   if (typeof question !== "string" || question.trim().length === 0) {
-    throw new Error("AI input must be a non-empty string");
+    throw new ApiError(422, "AI input must be a non-empty string");
   }
 
   const prompt = `
